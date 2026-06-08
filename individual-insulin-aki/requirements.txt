@@ -1,1 +1,14 @@
+# Core Data Science Stack
+pandas==2.2.2
+numpy==1.26.4
+scikit-learn==1.5.0
 
+# Machine Learning Engine
+xgboost==2.0.3
+
+# Visualization & Statistical Inspection
+matplotlib==3.8.4
+seaborn==0.13.2
+
+# Interactive CDSS Deployment Web App
+streamlit==1.35.0
