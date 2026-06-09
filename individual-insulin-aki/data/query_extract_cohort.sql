@@ -8,8 +8,8 @@ WITH icu_cohort AS (
         ie.outtime,
         pa.gender,
         pa.anchor_age AS age
-    FROM `physionet-data.mimiciv_icu.icustays` ie
-    INNER JOIN `physionet-data.mimiciv_hosp.patients` pa
+    FROM mimiciv_icu.icustays ie
+    INNER JOIN mimiciv_hosp.patients pa
         ON ie.subject_id = pa.subject_id
     WHERE pa.anchor_age >= 18
 ),
@@ -20,7 +20,7 @@ insulin_treatment AS (
         stay_id,
         charttime,
         amount AS insulin_dosage
-    FROM `physionet-data.mimiciv_icu.inputevents`
+    FROM mimiciv_icu.inputevents
     WHERE itemid IN (
         225152, -- Insulin - Regular (정규 인슐린)
         225153  -- Insulin - Glargine (장기 지속형 인슐린)
@@ -33,7 +33,7 @@ creatinine_labs AS (
         hadm_id,
         charttime,
         valuenum AS creatinine
-    FROM `physionet-data.mimiciv_hosp.labevents`
+    FROM mimiciv_hosp.labevents
     WHERE itemid = 50912 -- Serum Creatinine ItemID
         AND valuenum IS NOT NULL 
         AND valuenum < 150 -- 극단적 기입 오류 1차 필터링
