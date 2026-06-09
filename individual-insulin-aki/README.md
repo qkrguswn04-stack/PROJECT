@@ -45,4 +45,4 @@
 3. **학술적 강건성(Robustness) 검증**: 모델의 오버피팅이나 데이터 누수(Data Leakage)를 방지하기 위해 플라시보 테스트, 교란 민감도 분석 등 다각도의 통계적 검증 방어선을 구축합니다.
 
 ---
-📧 **Contact**: `qkrguswn04@gmail.com` | 🔗 **Portfolio Details**: [Your Notion or LinkedIn Link]
+📧 **Contact**: `qkrguswn04@gmail.com` | 🔗 **Portfolio Details**: [https://app.notion.com/p/Safe-Insulin-Pilot-348c849cdbb5808491eeee4e7dcafa65?source=copy_link]
