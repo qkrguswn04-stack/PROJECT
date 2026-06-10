@@ -1,10 +1,5 @@
 # AutoFCS 🔬
-### 머신러닝 평가 모델이 통합된 Flow Cytometry 자동 전처리 파이프라인
-
-![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)
-![Flask](https://img.shields.io/badge/Flask-3.0.3-000000?style=flat-square&logo=flask&logoColor=white)
-![scikit-learn](https://img.shields.io/badge/scikit--learn-1.5.0-F7931E?style=flat-square&logo=scikitlearn&logoColor=white)
-
+# 머신러닝 평가 모델이 통합된 Flow Cytometry 자동 전처리 파이프라인
 ---
 
 ## 📌 Overview
