@@ -4,7 +4,6 @@
 ![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)
 ![Flask](https://img.shields.io/badge/Flask-3.0.3-000000?style=flat-square&logo=flask&logoColor=white)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-1.5.0-F7931E?style=flat-square&logo=scikitlearn&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 
 ---
 
