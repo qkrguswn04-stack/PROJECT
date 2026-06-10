@@ -1,136 +1,192 @@
-# ==============================================================================
-# 02_ipw_propensity_score.py
-# 성향 점수(Propensity Score) 산출 → IPW 가중치 계산 → 공변량 균형 진단
-# 입력: sip_step1_final.csv
-# 출력: sip_step2_ipw.csv
-# ==============================================================================
-
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
+from sklearn.model_selection import train_test_split
+
+# 1. 고유한 stay_id 추출 및 8:2 분할
+unique_ids = df_master_fd['stay_id'].unique()
+train_ids, test_ids = train_test_split(unique_ids, test_size=0.2, random_state=42)
+
+# 2. 분할된 ID에 해당하는 행들만 필터링
+df_train = df_master_fd[df_master_fd['stay_id'].isin(train_ids)].copy()
+df_test = df_master_fd[df_master_fd['stay_id'].isin(test_ids)].copy()
+
+print(f"Train 셋 환자 수: {len(train_ids)}명 (행 수: {len(df_train)})")
+print(f"Test 셋 환자 수: {len(test_ids)}명 (행 수: {len(df_test)})")
+
+# 3. 모델에 사용할 Feature(X)와 Target(Y) 컬럼 정의
+# 식별자(stay_id)와 시간 정보(time_step_end)는 학습에서 제외합니다.
+feature_cols = ['time_step', 'age', 'gender_male', 'insulin_dosage', 'creatinine', 'fluid_input', 'diuretic_infusion']
+target_col = 'next_creatinine'
+
+X_train = df_train[feature_cols]
+y_train = df_train[target_col]
+
+X_test = df_test[feature_cols]
+y_test = df_test[target_col]
+
+print("\n학습 준비 완료!")
+print(f"X_train 셰이프: {X_train.shape}, y_train 셰이프: {y_train.shape}")
+
+# ──────────────────────────────────────────────────────────────────────────────
+
+import subprocess
+subprocess.run(['pip', 'install', 'xgboost'], check=True)
+from xgboost import XGBRegressor
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+
+print("XGBoost 베이스라인 모델 학습 시작...")
+
+# 1. XGBoost 회귀 모델 정의 및 학습
+xgb_model = XGBRegressor(
+    n_estimators=100,
+    max_depth=6,
+    learning_rate=0.1,
+    random_state=42,
+    n_jobs=-1 # 모든 CPU 코어 사용
+)
+
+xgb_model.fit(X_train, y_train)
+print("학습 완료!")
+
+# 2. Test 셋 예측
+y_pred = xgb_model.predict(X_test)
+
+# 3. 예측 성능 평가 지표 계산
+mae = mean_absolute_error(y_test, y_pred)
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+r2 = r2_score(y_test, y_pred)
+
+print("\n=== XGBoost Baseline 성능 평가 ===")
+print(f"MAE  (평균 절대 오차): {mae:.4f}")
+print(f"RMSE (평균 제곱근 오차): {rmse:.4f}")
+print(f"R²   (결정 계수): {r2:.4f}")
+
+# 4. 변수 중요도(Feature Importance) 확인
+importances = pd.DataFrame({
+    'Feature': feature_cols,
+    'Importance': xgb_model.feature_importances_
+}).sort_values(by='Importance', ascending=False)
+
+print("\n=== 변수 중요도 ===")
+print(importances.to_string(index=False))
+
+# ──────────────────────────────────────────────────────────────────────────────
+
+# 현재 데이터셋의 요약 통계량 확인
+print(df_master_fd[['insulin_dosage', 'creatinine', 'next_creatinine', 'fluid_input']].describe())
+
+# ──────────────────────────────────────────────────────────────────────────────
+
+# 임상적 가이드라인에 따른 이상치 제거
+# 1. 크레아티닌: 0 초과 ~ 15 이하 (15를 넘는 것은 극단적인 이상치 또는 데이터 오류)
+# 2. 인슐린 12시간 총량: 0 이상 ~ 150 Units 이하 (12시간 동안 3000은 불가능)
+# 3. 수액 12시간 총량: 0 이상 ~ 6000 mL 이하 (6리터)
+
+df_cleaned = df_master_fd[
+    (df_master_fd['creatinine'] > 0) & (df_master_fd['creatinine'] <= 15) &
+    (df_master_fd['next_creatinine'] > 0) & (df_master_fd['next_creatinine'] <= 15) &
+    (df_master_fd['insulin_dosage'] >= 0) & (df_master_fd['insulin_dosage'] <= 150) &
+    (df_master_fd['fluid_input'] >= 0) & (df_master_fd['fluid_input'] <= 6000)
+].copy()
+
+print(f"정제 전 데이터 행 수: {len(df_master_fd)}")
+print(f"정제 후 데이터 행 수: {len(df_cleaned)}")
+print(f"제거된 불량 데이터 수: {len(df_master_fd) - len(df_cleaned)}")
+
+# 정제된 데이터의 통계량 재확인
+print(df_cleaned[['insulin_dosage', 'creatinine', 'next_creatinine', 'fluid_input']].describe())
+
+# ──────────────────────────────────────────────────────────────────────────────
+
+# 1. 정제된 데이터를 바탕으로 stay_id 추출 및 8:2 분할
+unique_ids_cleaned = df_cleaned['stay_id'].unique()
+train_ids, test_ids = train_test_split(unique_ids_cleaned, test_size=0.2, random_state=42)
+
+df_train_c = df_cleaned[df_cleaned['stay_id'].isin(train_ids)].copy()
+df_test_c = df_cleaned[df_cleaned['stay_id'].isin(test_ids)].copy()
+
+# 2. X, y 재지정
+X_train_c = df_train_c[feature_cols]
+y_train_c = df_train_c[target_col]
+X_test_c = df_test_c[feature_cols]
+y_test_c = df_test_c[target_col]
+
+print(f"새로운 Train 행 수: {len(X_train_c)}, Test 행 수: {len(X_test_c)}")
+
+# 3. XGBoost 재학습
+xgb_model_cleaned = XGBRegressor(
+    n_estimators=100, max_depth=6, learning_rate=0.1, random_state=42, n_jobs=-1
+)
+xgb_model_cleaned.fit(X_train_c, y_train_c)
+
+# 4. 예측 및 평가
+y_pred_c = xgb_model_cleaned.predict(X_test_c)
+
+print("\n=== [이상치 제거 후] XGBoost Baseline 성능 평가 ===")
+print(f"MAE  (평균 절대 오차): {mean_absolute_error(y_test_c, y_pred_c):.4f}")
+print(f"RMSE (평균 제곱근 오차): {np.sqrt(mean_squared_error(y_test_c, y_pred_c)):.4f}")
+print(f"R²   (결정 계수): {r2_score(y_test_c, y_pred_c):.4f}")
+
+# 5. 변수 중요도 재확인
+importances_c = pd.DataFrame({
+    'Feature': feature_cols,
+    'Importance': xgb_model_cleaned.feature_importances_
+}).sort_values(by='Importance', ascending=False)
+
+print("\n=== 새로운 변수 중요도 ===")
+print(importances_c.to_string(index=False))
+
+# ──────────────────────────────────────────────────────────────────────────────
+
 from sklearn.linear_model import LogisticRegression
 
-# ─────────────────────────────────────────────
-# STEP 1. 데이터 로드
-# ─────────────────────────────────────────────
-print("=" * 60)
-print("STEP 1. 01단계 정제 데이터 로드")
-print("=" * 60)
+# 1. 처치 변수 이진화 (인슐린 투여 여부 플래그 생성)
+# 인슐린 용량이 0보다 크면 1(처치군), 0이면 0(대조군)
+df_cleaned['treatment_binary'] = (df_cleaned['insulin_dosage'] > 0).astype(int)
 
-df = pd.read_csv('sip_step1_final.csv')
-print(f"로드 완료: {df.shape}")
-print(f"컬럼: {list(df.columns)}")
+# 2. 성향 점수 예측을 위한 Feature(공변량)와 Target 설정
+# 의사가 인슐린을 줄지 말지 결정할 때 '현재 시점'에서 본 정보들입니다.
+confounder_cols = ['time_step', 'age', 'gender_male', 'creatinine', 'fluid_input', 'diuretic_infusion']
 
+X_ps = df_cleaned[confounder_cols]
+y_ps = df_cleaned['treatment_binary']
 
-# ─────────────────────────────────────────────
-# STEP 2. 처치 변수 이진화
-# ─────────────────────────────────────────────
-print("\n" + "=" * 60)
-print("STEP 2. 처치 변수 이진화 (인슐린 투여 여부)")
-print("=" * 60)
-
-# 인슐린 용량 > 0 이면 처치군(1), 아니면 대조군(0)
-# ※ 이진화는 IPW 성향 점수 추정 용도. 실제 모델 학습엔 연속형 insulin_dosage 사용
-df['treatment_binary'] = (df['insulin_dosage'] > 0).astype(int)
-
-treated = df['treatment_binary'].sum()
-control = len(df) - treated
-print(f"처치군(인슐린 투여): {treated:,}행 ({treated/len(df)*100:.1f}%)")
-print(f"대조군(미투여):       {control:,}행 ({control/len(df)*100:.1f}%)")
-
-
-# ─────────────────────────────────────────────
-# STEP 3. 성향 점수(Propensity Score) 산출
-# ─────────────────────────────────────────────
-print("\n" + "=" * 60)
-print("STEP 3. 성향 점수 산출 (로지스틱 회귀)")
-print("=" * 60)
-
-# 공변량: 의사가 인슐린 처방을 결정할 때 현재 시점에서 관찰 가능한 변수들
-# ※ creatinine = 현재 크레아티닌 (공변량) — next_creatinine이 타깃이므로 역인과 없음
-confounder_cols = ['time_step', 'age', 'gender_male',
-                   'creatinine', 'fluid_input', 'diuretic_infusion']
-
-X_ps = df[confounder_cols]
-y_ps = df['treatment_binary']
-
+# 3. 로지스틱 회귀를 이용한 성향 점수(Propensity Score) 모델 학습
 ps_model = LogisticRegression(max_iter=1000, random_state=42)
 ps_model.fit(X_ps, y_ps)
 
-df['propensity_score'] = ps_model.predict_proba(X_ps)[:, 1]
+# 4. 각 행별로 처치를 받을 확률(Propensity Score) 추출
+# [:, 1]은 인슐린을 투여받을 확률(1일 확률)을 뜻합니다.
+df_cleaned['propensity_score'] = ps_model.predict_proba(X_ps)[:, 1]
 
-print(f"성향 점수 산출 완료")
-print(f"  최솟값: {df['propensity_score'].min():.4f}")
-print(f"  최댓값: {df['propensity_score'].max():.4f}")
-print(f"  평균:   {df['propensity_score'].mean():.4f}")
+print("성향 점수(Propensity Score) 산출 완료!")
+print(df_cleaned[['stay_id', 'treatment_binary', 'propensity_score']].head())
 
+# ──────────────────────────────────────────────────────────────────────────────
 
-# ─────────────────────────────────────────────
-# STEP 4. IPW 가중치 산출 및 Trimming
-# ─────────────────────────────────────────────
-print("\n" + "=" * 60)
-print("STEP 4. IPW 가중치 산출 및 99% Trimming")
-print("=" * 60)
-
-# ATE(Average Treatment Effect) 가중치 공식
-# 처치군: 1 / P(T=1|X),  대조군: 1 / P(T=0|X) = 1 / (1 - PS)
-df['ipw_weight'] = np.where(
-    df['treatment_binary'] == 1,
-    1.0 / df['propensity_score'],
-    1.0 / (1.0 - df['propensity_score'])
+# 1. IPW 가중치 수식 적용
+df_cleaned['ipw_weight'] = np.where(
+    df_cleaned['treatment_binary'] == 1,
+    1 / df_cleaned['propensity_score'],
+    1 / (1 - df_cleaned['propensity_score'])
 )
 
-# 상위 99% 에서 클리핑 (극단적 가중치 폭발 방지)
-upper_bound          = df['ipw_weight'].quantile(0.99)
-df['ipw_trimmed']    = np.clip(df['ipw_weight'], a_min=None, a_max=upper_bound)
+print("IPW 가중치 계산 완료!")
+print(df_cleaned[['stay_id', 'treatment_binary', 'propensity_score', 'ipw_weight']].head())
 
-print(f"Raw IPW   — 최댓값: {df['ipw_weight'].max():.2f},  평균: {df['ipw_weight'].mean():.2f}")
-print(f"Trimmed IPW — 최댓값: {df['ipw_trimmed'].max():.2f},  평균: {df['ipw_trimmed'].mean():.2f}")
+# 2. 앞서 나눈 Train/Test 분할 구조에 가중치 컬럼 매칭하기
+# 데이터 누수 방지를 위해 기존에 쪼개둔 분할 방식을 그대로 유지하면서 ipw_weight만 가져옵니다.
+df_train_final = df_cleaned[df_cleaned['stay_id'].isin(train_ids)].copy()
+df_test_final = df_cleaned[df_cleaned['stay_id'].isin(test_ids)].copy()
 
+# 3. 인과 추론 가중치 모델(Weighted Model) 학습을 위한 준비
+X_train_w = df_train_final[feature_cols]
+y_train_w = df_train_final[target_col]
+w_train = df_train_final['ipw_weight'] # 학습에 사용할 가중치
 
-# ─────────────────────────────────────────────
-# STEP 5. 공변량 균형 진단 (SMD)
-# ─────────────────────────────────────────────
-print("\n" + "=" * 60)
-print("STEP 5. 공변량 균형 진단 — SMD (Standardized Mean Difference)")
-print("=" * 60)
-print("※ |SMD| < 0.1 이면 두 집단이 충분히 균형 잡혀 있다고 판단\n")
+X_test_w = df_test_final[feature_cols]
+y_test_w = df_test_final[target_col]
+w_test = df_test_final['ipw_weight']
 
-smd_results = []
-for col in confounder_cols:
-    treated_vals = df[df['treatment_binary'] == 1][col]
-    control_vals = df[df['treatment_binary'] == 0][col]
-    pooled_std   = np.sqrt((treated_vals.std() ** 2 + control_vals.std() ** 2) / 2)
-    smd          = (treated_vals.mean() - control_vals.mean()) / pooled_std if pooled_std > 0 else 0.0
-    smd_results.append({'공변량': col, 'SMD': round(smd, 4),
-                        '균형 여부': '✅ 균형' if abs(smd) < 0.1 else '⚠️  불균형'})
-
-smd_df = pd.DataFrame(smd_results)
-print(smd_df.to_string(index=False))
-
-# SMD 시각화
-plt.figure(figsize=(8, 4))
-colors = ['#059669' if abs(v) < 0.1 else '#DC2626' for v in smd_df['SMD']]
-plt.barh(smd_df['공변량'], smd_df['SMD'].abs(), color=colors, height=0.5)
-plt.axvline(x=0.1, color='gray', linestyle='--', linewidth=1, label='Threshold (0.1)')
-plt.xlabel('|SMD|')
-plt.title('Covariate Balance: Standardized Mean Difference')
-plt.legend()
-plt.tight_layout()
-plt.savefig('covariate_balance_smd.png', dpi=150)
-plt.close()
-print("\n균형 진단 차트 저장: covariate_balance_smd.png")
-
-
-# ─────────────────────────────────────────────
-# STEP 6. 저장
-# ─────────────────────────────────────────────
-print("\n" + "=" * 60)
-print("STEP 6. IPW 가중치 적용 데이터셋 저장")
-print("=" * 60)
-
-df.to_csv('sip_step2_ipw.csv', index=False)
-print("✅ 저장 완료: sip_step2_ipw.csv")
-print(f"   최종 셰이프: {df.shape}")
-print(f"   추가 컬럼:   treatment_binary, propensity_score, ipw_weight, ipw_trimmed")
+print("\n=== 가중치 데이터셋 세팅 완료 ===")
+print(f"Train 가중치 평균: {w_train.mean():.4f}, 최댓값: {w_train.max():.4f}")
