@@ -30,15 +30,15 @@
 
 ### 👥 팀 프로젝트 (Team Projects)
 
-#### 3. `team-ovarian-cancer-cdss/` — 난소암 초음파 이미지 기반 임상 의사결정 지원 시스템(CDSS) 개발
-* **Role**: Lead Data Scientist (AI 모델링 및 평가지표 설계 주도)
-* **Core Tech**: PyTorch, Convolutional Neural Networks (CNN), Grad-CAM, Medical Image Augmentation
-* **Summary**: 난소암 의심 환자의 골반 초음파 영상을 분석하여 양성/악성 종양을 분류하는 정밀 딥러닝 아키텍처 설계. Grad-CAM 기반의 시각적 설명 가능성(XAI)을 결합하여 초음파 내 변변 부위를 하이라이팅함으로써 현장 의료진의 진단 수용성과 신뢰도를 극대화함.
+#### 3. `team-ovarian-cancer-cdss/` — 진행중입니다.
+* **Role**: Project Leader / Data Engineer / Analyst
+* **Core Tech**: 
+* **Summary**: 
 
 #### 4. `team-project-4/` — [네 번째 프로젝트 제목 입력란]
 * **Role**: Project Leader / Data Engineer / Analyst
-* **Core Tech**: [핵심 기술 스택 예: Apache Spark, Fast API, Docker]
-* **Summary**: [해당 팀 프로젝트의 대략적인 문제 해결 중심의 성과 1~2줄 요약 입력]
+* **Core Tech**: 
+* **Summary**: 
 
 ---
 
