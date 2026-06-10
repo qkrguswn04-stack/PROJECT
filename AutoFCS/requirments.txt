@@ -1,1 +1,17 @@
+# Web Framework
+flask==3.0.3
 
+# FCS File Parsing & Flow Cytometry
+flowkit==1.0.1
+
+# Core Numerical Computing
+numpy==1.26.4
+
+# Signal Processing (Peak Detection, Gaussian Smoothing)
+scipy==1.13.0
+
+# ML-based Gating Validation (RANSAC, Accuracy, Recall)
+scikit-learn==1.5.0
+
+# Dot Plot Visualization (base64 PNG export)
+matplotlib==3.8.4
