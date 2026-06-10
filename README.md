@@ -50,4 +50,4 @@
 
 ---
 📧 **Contact**: `qkrguswn04@gmail.com` 
-📧 **Portfolio detail**: ''
+📧 **Portfolio detail**: 'https://app.notion.com/p/Park-Hyun-ju-341c849cdbb580d19ba5d67ba3bfc58d?source=copy_link'
