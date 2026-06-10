@@ -106,7 +106,8 @@ python app.py
 
 ```
 AutoFCS/
-├── app.py                  # Flask 서버 — 라우팅 및 게이팅 알고리즘 전체
+├── app/
+│   └── app.py              # Flask 서버 — 라우팅 및 게이팅 알고리즘 전체
 ├── requirements.txt        # 의존성 패키지
 ├── README.md
 ├── .gitignore
