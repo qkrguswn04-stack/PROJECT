@@ -1,5 +1,4 @@
 # AutoFCS 🔬
-# 머신러닝 평가 모델이 통합된 
 # Flow Cytometry 자동 전처리 파이프라인
 ---
 
