@@ -30,24 +30,99 @@
 
 ### 👥 팀 프로젝트 (Team Projects)
 
-#### 3. `team-ovarian-cancer-cdss/` — 진행중입니다.
-* **Role**: Project Leader / Data Engineer / Analyst
-* **Core Tech**: 
-* **Summary**: 
+#### 3. `OVA-LINK/` — 난소암 조기진단 AI 기반 의료진 의사결정 지원 시스템 (CDSS)
 
-#### 4. `team-project-4/` — [네 번째 프로젝트 제목 입력란]
-* **Role**: Project Leader / Data Engineer / Analyst
-* **Core Tech**: 
-* **Summary**: 
+**Role**: Project Manager / AI Lead (초음파 AI 모델 개발 담당)
+
+**Core Tech**: Next.js, FastAPI, PostgreSQL, PyTorch, YOLOv8n, RT-DETR, DenseNet121, Swin Transformer, XGBoost, DICOM (Orthanc PACS)
+
+**프로젝트 기간**: 2026년 5월 11일 ~ 2026년 7월 9일 (60일)
+
+**기여도**: 40% 이상 (PM, AI Lead, 초음파 AI 모델 100% 담당)
+
+**Key Challenge**: 
+난소암은 부인암 중 사망률 1위이나, 환자 70%가 3기 이상에서 진단됨. 초기 비특이적 증상으로 인한 진단 지연이 문제. 1차 병원의 초음파 기기와 혈액검사만으로는 의료진의 경험과 직감에 의존한 진단만 가능했음. 초음파 이미지 분석의 도메인 특수성(스펙클 노이즈, 불명확한 경계)을 극복하고, 1차 병원에서도 신뢰할 수 있는 조기 진단 시스템 필요.
+
+**Data**: 
+- MMOTU (1,639장, 공개) → AI-HUB (15,694장, 폐쇄망 학습)
+- MIMIC-IV 임상 데이터 기반 혈액검사 분석
+- 팀 공용 PostgreSQL DB (192.168.0.33)
+
+**Pipeline**:
+
+1. **초음파 AI 탐지 모델 (Detection)**
+   - 모델: YOLOv8n + RT-DETR WBF 앙상블
+   - 개발 전략: 5가지 모델 비교 후 최적 선택
+     - 베이스라인 (YOLOv8n): mAP50 28.8%
+     - AI-HUB Fine-tuning: mAP50 50.0% (+21.2%p)
+     - SAMUS: Recall ~97% (Data Leakage)
+     - Curriculum Learning: mAP50 47.7%
+     - **최종 앙상블: Recall 95.47%, F1 0.9004**
+   - 선택 이유: 초기 암 진단에서 종양 미탐지는 치명적 → Recall 최우선
+
+2. **초음파 AI 분류 모델 (Classification)**
+   - 모델: DenseNet121 + Swin Transformer Early-fusion
+   - 개발 전략: 8가지 모델 비교 후 CNN+Transformer 상호보완 구조 선택
+     - EfficientNet-B4: AUC 0.8693
+     - ResNet-50: AUC 0.8807
+     - USF-MAE: AUC 0.8791
+     - DenseNet-121: AUC 0.8928
+     - Swin 단독: AUC 0.9142
+     - **최종 DenseNet+Swin: AUC 0.8932, Sensitivity 74.31%**
+   - 성능: AUC 0.9553, Sensitivity 82.76% (조기), 80.27% (진행)
+   - 계층적 파이프라인: 양성/악성 판정 → FIGO Stage 분류 → 서브타입 분류
+
+3. **혈액검사 분석**
+   - XGBoost 기반 위험도 예측
+   - TyG Index 등 신규 바이오마커 분석 (팀원 송대영 담당)
+   - PR-AUC: 0.9784
+
+4. **CDSS 통합 및 제품화**
+   - FastAPI 백엔드: AI 모델 오케스트레이션, PACS 연동, RMI 점수 계산
+   - Next.js 프론트엔드: 의료진 실시간 의사결정 지원 인터페이스
+   - PostgreSQL: 환자 데이터 및 분석 결과 저장
+
+**Key Results**:
+
+- **탐지 모델**: Recall 95.47%, F1 Score 0.9004 (초기 암 미탐지 최소화)
+- **분류 모델**: AUC 0.9553, Sensitivity 82.76% (조기), 80.27% (진행)
+- **도메인 가중치의 가치 입증**: MMOTU 1,639장 (Recall 22.9%) → AI-HUB 도메인 가중치 + fine-tuning (Recall 47.2%, +24.3%p). 데이터 규모보다 도메인 지식이 담긴 가중치의 중요성 실증.
+- **폐쇄망 환경 개발 역량**: AI-HUB 폐쇄망 내에서 외부 인터넷 없이 경로·버전·의존성 관리하며 모델 재적응. 에러 분석 및 논리적 디버깅 능력 강화.
+- **팀 협업 체계화**: Notion 워크스페이스로 일일 업무일지, 연구 보고서, 성과 추적. PM으로서 기한 내 목표 달성 및 팀원 함께 성장.
+- **의료 윤리 준수**: IRB 신청서 및 연구계획서 작성을 통해 의료 데이터 보호 및 연구 윤리의 중요성 습득.
+
+**GitHub**: https://github.com/qkrguswn04-stack/PROJECT/tree/main/OvaCDSS
+
+**팀원**:
+- 박현주 (PM, AI Lead): 초음파 AI 모델 개발
+- 송대영: 혈액검사 XGBoost 분석
+- 이다영: FastAPI/Next.js 개발
 
 ---
 
 ## 🛠️ 핵심 방법론적 차별성 (Core Philosophy)
 
 1. **도메인 생태계와 통계학의 융합**: 단순한 예측 스코어링을 넘어, 의료 가이드라인에 기반한 데이터 엔지니어링과 선택 편향을 제어하는 통계적 장치(Causal Framework)를 모델링 전반에 이식합니다.
-2. **비즈니스 및 임상적 제품화(Productization)**: 백엔드 스크립트에 머무는 코드를 Streamlit 등 웹 프로토타입 인터페이스로 격상시켜 현업(의료진/의사결정권자)이 즉시 시뮬레이션할 수 있는 CDSS 형태로 제품화하는 역량을 지향합니다.
+
+2. **비즈니스 및 임상적 제품화(Productization)**: 백엔드 스크립트에 머무는 코드를 Streamlit, Next.js 등 웹 프로토타입 인터페이스로 격상시켜 현업(의료진/의사결정권자)이 즉시 시뮬레이션할 수 있는 CDSS 형태로 제품화하는 역량을 지향합니다.
+
 3. **학술적 강건성(Robustness) 검증**: 모델의 오버피팅이나 데이터 누수(Data Leakage)를 방지하기 위해 플라시보 테스트, 교란 민감도 분석 등 다각도의 통계적 검증 방어선을 구축합니다.
 
 ---
-- 📧 **Contact**: `qkrguswn04@gmail.com`
-- 📧 **Portfolio detail**: 'https://app.notion.com/p/Park-Hyun-ju-341c849cdbb580d19ba5d67ba3bfc58d?source=copy_link'
+
+## 📚 기술 스택 요약
+
+**데이터 처리**: Python (Pandas, NumPy), PostgreSQL, MIMIC-IV, AI-HUB
+**머신러닝**: PyTorch, XGBoost, scikit-learn, CausalML
+**딥러닝**: YOLOv8, RT-DETR, DenseNet, Swin Transformer, Vision Transformer
+**백엔드**: FastAPI, SQLAlchemy
+**프론트엔드**: Next.js 14, React, Tailwind CSS, HTML5
+**배포/협업**: Streamlit, Docker, Git/SVN, Notion, AWS/On-premise
+
+---
+
+## 📞 연락처
+
+- **Email**: qkrguswn04@gmail.com
+- **Portfolio 상세**: https://app.notion.com/p/Park-Hyun-ju-341c849cdbb580d19ba5d67ba3bfc58d
+- **GitHub**: https://github.com/qkrguswn04-stack
