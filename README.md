@@ -32,23 +32,23 @@
 
 #### 3. `OVA-LINK/` — 난소암 조기진단 AI 기반 의료진 의사결정 지원 시스템 (CDSS)
 
-**Role**: Project Manager / AI Lead (초음파 AI 모델 개발 담당)
+* **Role**: Project Manager / AI Lead (초음파 AI 모델 개발 담당)
 
-**Core Tech**: Next.js, FastAPI, PostgreSQL, PyTorch, YOLOv8n, RT-DETR, DenseNet121, Swin Transformer, XGBoost, DICOM (Orthanc PACS)
+* **Core Tech**: Next.js, FastAPI, PostgreSQL, PyTorch, YOLOv8n, RT-DETR, DenseNet121, Swin Transformer, XGBoost, DICOM (Orthanc PACS)
 
-**프로젝트 기간**: 2026년 5월 11일 ~ 2026년 7월 9일 (60일)
+* **프로젝트 기간**: 2026년 5월 11일 ~ 2026년 7월 9일 (60일)
 
-**기여도**: 40% 이상 (PM, AI Lead, 초음파 AI 모델 100% 담당)
+* **기여도**: 40% 이상 (PM, AI Lead, 초음파 AI 모델 100% 담당)
 
-**Key Challenge**: 
+* **Key Challenge**: 
 난소암은 부인암 중 사망률 1위이나, 환자 70%가 3기 이상에서 진단됨. 초기 비특이적 증상으로 인한 진단 지연이 문제. 1차 병원의 초음파 기기와 혈액검사만으로는 의료진의 경험과 직감에 의존한 진단만 가능했음. 초음파 이미지 분석의 도메인 특수성(스펙클 노이즈, 불명확한 경계)을 극복하고, 1차 병원에서도 신뢰할 수 있는 조기 진단 시스템 필요.
 
-**Data**: 
+* **Data**: 
 - MMOTU (1,639장, 공개) → AI-HUB (15,694장, 폐쇄망 학습)
 - MIMIC-IV 임상 데이터 기반 혈액검사 분석
 - 팀 공용 PostgreSQL DB (192.168.0.33)
 
-**Pipeline**:
+* **Pipeline**:
 
 1. **초음파 AI 탐지 모델 (Detection)**
    - 모델: YOLOv8n + RT-DETR WBF 앙상블
@@ -82,7 +82,7 @@
    - Next.js 프론트엔드: 의료진 실시간 의사결정 지원 인터페이스
    - PostgreSQL: 환자 데이터 및 분석 결과 저장
 
-**Key Results**:
+* **Key Results**:
 
 - **탐지 모델**: Recall 95.47%, F1 Score 0.9004 (초기 암 미탐지 최소화)
 - **분류 모델**: AUC 0.9553, Sensitivity 82.76% (조기), 80.27% (진행)
@@ -91,9 +91,9 @@
 - **팀 협업 체계화**: Notion 워크스페이스로 일일 업무일지, 연구 보고서, 성과 추적. PM으로서 기한 내 목표 달성 및 팀원 함께 성장.
 - **의료 윤리 준수**: IRB 신청서 및 연구계획서 작성을 통해 의료 데이터 보호 및 연구 윤리의 중요성 습득.
 
-**GitHub**: https://github.com/qkrguswn04-stack/PROJECT/tree/main/OvaCDSS
+* **GitHub**: https://github.com/qkrguswn04-stack/PROJECT/tree/main/OvaCDSS
 
-**팀원**:
+* **팀원**:
 - 박현주 (PM, AI Lead): 초음파 AI 모델 개발
 - 송대영: 혈액검사 XGBoost 분석
 - 이다영: FastAPI/Next.js 개발
