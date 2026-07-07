@@ -1,6 +1,7 @@
-# 🚀 Advanced Data Science & Causal Inference Portfolio Hub
+# 📊 박현주 | Life Sciences → Data Analytics
 
-본 저장소는 머신러닝 알고리즘과 통계학적 **인과 추론(Causal Inference)** 방법론을 융합하여, 현실의 복잡한 의료 도메인 문제 및 데이터 파이프라인의 한계를 돌파한 4개의 프로젝트(개인 2, 팀 2)를 모아둔 포트폴리오 아카이브입니다.
+**Python, JavaScript, SQL**을 활용해 의료 데이터 분석과 인과 추론 기반의 임상 의사결정 지원 시스템을 구축한 포트폴리오입니다. 
+데이터 전처리부터 웹 서비스 제품화까지 3개 프로젝트를 담았습니다.
 
 ---
 
