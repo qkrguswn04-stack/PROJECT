@@ -151,12 +151,12 @@
 
 ## 📚 기술 스택 요약
 
-**데이터 처리**: Python (Pandas, NumPy), PostgreSQL, MIMIC-IV, AI-HUB
-**머신러닝**: PyTorch, XGBoost, scikit-learn, CausalML
-**딥러닝**: YOLOv8, RT-DETR, DenseNet, Swin Transformer, Vision Transformer
-**백엔드**: FastAPI, SQLAlchemy
-**프론트엔드**: Next.js 14, React, Tailwind CSS, HTML5
-**배포/협업**: Streamlit, Docker, Git/SVN, Notion, AWS/On-premise
+- **데이터 처리**: Python (Pandas, NumPy), PostgreSQL, MIMIC-IV, AI-HUB
+- **머신러닝**: PyTorch, XGBoost, scikit-learn, CausalML
+- **딥러닝**: YOLOv8, RT-DETR, DenseNet, Swin Transformer, Vision Transformer
+- **백엔드**: FastAPI, SQLAlchemy
+- **프론트엔드**: Next.js 14, React, Tailwind CSS, HTML5
+- **배포/협업**: Streamlit, Docker, Git/SVN, Notion, AWS/On-premise
 
 ---
 
