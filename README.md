@@ -35,7 +35,7 @@
 
 **Pipeline**:
 
-1. **FCS 파일 자동 로드 및 파싱**
+1. **FCS 파일 로드**
    - FlowPy/FCSPly를 이용한 바이너리 FCS 파일 읽기
    - 파일 메타데이터 추출 및 검증
    - 게이팅 이력(Gating History) 자동 인식
