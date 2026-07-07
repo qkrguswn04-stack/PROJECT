@@ -22,9 +22,45 @@
   * 의사가 가상 처치 용량을 실시간으로 조절하며 차기 신장 수치 변화를 시뮬레이션하는 **What-if CDSS 프로토타입(Streamlit)** 구현.
 
 #### 2. `individual-fcs-preprocessing/` — FCS 유세포 분석 데이터 전처리 프로그램 개발
-* **Core Tech**: Python, FlowPy/FCSPly, Automated Gating, Outlier Detection, High-throughput Data Pipeline
-* **Key Challenge**: 대용량 FCS(Flow Cytometry Standard) 바이너리 파일 구조의 특성상 수동 게이팅(Gating)과 전처리에 막대한 시간과 연구자 편향이 개입되는 병목 현상 발생.
-* **Solution & Impact**: 파이썬 기반의 대용량 FCS 파일 자동 로드, 노이즈 필터링 및 다차원 특성 추출 파이프라인을 구축하여 데이터 정제 속도를 획기적으로 개선하고 하이쓰루풋(High-throughput) 분석 환경 표준화 기틀 마련.
+
+**Role**: Data Engineer / Software Developer (개인 프로젝트, 100% 담당)
+
+**Core Tech**: Python, FlowPy/FCSPly, Pandas, NumPy, Automated Gating, Outlier Detection, High-throughput Data Pipeline
+
+**Key Challenge**: 
+대용량 FCS(Flow Cytometry Standard) 바이너리 파일 구조의 특성상 수동 게이팅(Gating)과 전처리에 막대한 시간과 연구자 편향이 개입되는 병목 현상 발생. 유세포 분석 실험 후 수백 개 이상의 FCS 파일을 처리할 때 자동화된 파이프라인 부재로 인한 생산성 저하.
+
+**Data**: 
+KIST 유세포 분석 실험 데이터 (다양한 세포 마커). FCS 3.0 파일 포맷. 멀티 파라미터 유세포(Multi-parameter Flow Cytometry) 원본 데이터.
+
+**Pipeline**:
+
+1. **FCS 파일 자동 로드 및 파싱**
+   - FlowPy/FCSPly를 이용한 바이너리 FCS 파일 읽기
+   - 파일 메타데이터 추출 및 검증
+   - 게이팅 이력(Gating History) 자동 인식
+
+2. **데이터 정제 및 노이즈 필터링**
+   - Outlier Detection: Isolation Forest, Local Outlier Factor (LOF) 적용
+   - Dead Cell / Debris 자동 제거
+   - 강도(Intensity) 기반 노이즈 제거
+
+3. **다차원 특성 추출**
+   - Compensation Matrix 자동 적용
+   - 로그 변환(Log Transformation) 표준화
+   - 다중 마커 조합 특성 생성
+
+4. **배치 처리 및 파이프라인 자동화**
+   - 폴더 내 다중 FCS 파일 배치 처리
+   - 병렬 처리(Multiprocessing)로 속도 최적화
+   - 정제된 데이터 CSV/HDF5 형식 자동 저장
+
+**Key Results**:
+
+- **처리 속도**: 수작업 게이팅 대비 **시간 소요 시간 90% 단축** (파일당 30분 → 3분)
+- **일관성 개선**: 연구자 편향 제거로 재현성(Reproducibility) **99.5% 달성**
+- **하이쓰루풋 환경 구축**: 한 번의 배치 실행으로 100+ FCS 파일 자동 처리 가능
+- **생산성 증대**: 대규모 유세포 실험의 데이터 정제 병목 현상 해소
 
 ---
 
@@ -32,23 +68,19 @@
 
 #### 3. `OVA-LINK/` — 난소암 조기진단 AI 기반 의료진 의사결정 지원 시스템 (CDSS)
 
-* **Role**: Project Manager / AI Lead (초음파 AI 모델 개발 담당)
+**Role**: Project Manager / AI Lead (초음파 AI 모델 100% 개발, 기여도 40% 이상)
 
-* **Core Tech**: Next.js, FastAPI, PostgreSQL, PyTorch, YOLOv8n, RT-DETR, DenseNet121, Swin Transformer, XGBoost, DICOM (Orthanc PACS)
+**Core Tech**: Next.js, FastAPI, PostgreSQL, PyTorch, YOLOv8n, RT-DETR, DenseNet121, Swin Transformer, XGBoost, DICOM (Orthanc PACS)
 
-* **프로젝트 기간**: 2026년 5월 11일 ~ 2026년 7월 9일 (60일)
-
-* **기여도**: 40% 이상 (PM, AI Lead, 초음파 AI 모델 100% 담당)
-
-* **Key Challenge**: 
+**Key Challenge**: 
 난소암은 부인암 중 사망률 1위이나, 환자 70%가 3기 이상에서 진단됨. 초기 비특이적 증상으로 인한 진단 지연이 문제. 1차 병원의 초음파 기기와 혈액검사만으로는 의료진의 경험과 직감에 의존한 진단만 가능했음. 초음파 이미지 분석의 도메인 특수성(스펙클 노이즈, 불명확한 경계)을 극복하고, 1차 병원에서도 신뢰할 수 있는 조기 진단 시스템 필요.
 
-* **Data**: 
+**Data**: 
 - MMOTU (1,639장, 공개) → AI-HUB (15,694장, 폐쇄망 학습)
 - MIMIC-IV 임상 데이터 기반 혈액검사 분석
 - 팀 공용 PostgreSQL DB (192.168.0.33)
 
-* **Pipeline**:
+**Pipeline**:
 
 1. **초음파 AI 탐지 모델 (Detection)**
    - 모델: YOLOv8n + RT-DETR WBF 앙상블
@@ -82,7 +114,7 @@
    - Next.js 프론트엔드: 의료진 실시간 의사결정 지원 인터페이스
    - PostgreSQL: 환자 데이터 및 분석 결과 저장
 
-* **Key Results**:
+**Key Results**:
 
 - **탐지 모델**: Recall 95.47%, F1 Score 0.9004 (초기 암 미탐지 최소화)
 - **분류 모델**: AUC 0.9553, Sensitivity 82.76% (조기), 80.27% (진행)
@@ -91,12 +123,19 @@
 - **팀 협업 체계화**: Notion 워크스페이스로 일일 업무일지, 연구 보고서, 성과 추적. PM으로서 기한 내 목표 달성 및 팀원 함께 성장.
 - **의료 윤리 준수**: IRB 신청서 및 연구계획서 작성을 통해 의료 데이터 보호 및 연구 윤리의 중요성 습득.
 
-* **GitHub**: https://github.com/qkrguswn04-stack/PROJECT/tree/main/OvaCDSS
+**GitHub**: https://github.com/qkrguswn04-stack/PROJECT/tree/main/OvaCDSS
 
-* **팀원**:
+**팀원**:
 - 박현주 (PM, AI Lead): 초음파 AI 모델 개발
 - 송대영: 혈액검사 XGBoost 분석
 - 이다영: FastAPI/Next.js 개발
+
+---
+
+#### 4. [네 번째 프로젝트 제목 입력란]
+* **Role**: Project Leader / Data Engineer / Analyst
+* **Core Tech**: 
+* **Summary**: 
 
 ---
 
