@@ -31,7 +31,7 @@
 대용량 FCS(Flow Cytometry Standard) 바이너리 파일 구조의 특성상 수동 게이팅(Gating)과 전처리에 막대한 시간과 연구자 편향이 개입되는 병목 현상 발생. 유세포 분석 실험 후 수백 개 이상의 FCS 파일을 처리할 때 자동화된 파이프라인 부재로 인한 생산성 저하.
 
 **Data**: 
-KIST 유세포 분석 실험 데이터 (다양한 세포 마커). FCS 3.0 파일 포맷. 멀티 파라미터 유세포(Multi-parameter Flow Cytometry) 원본 데이터.
+유세포 분석 실험 데이터 (다양한 세포 마커). FCS 3.0 파일 포맷. 멀티 파라미터 유세포(Multi-parameter Flow Cytometry) 원본 데이터.
 
 **Pipeline**:
 
