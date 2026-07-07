@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans:             'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+
+  --color-canvas:          #f3f4f7;
+  --color-surface-1:       #ffffff;
+  --color-surface-2:       #edeef1;
+  --color-surface-3:       #e2e4e8;
+  --color-hairline:        #c8ccd4;
+  --color-hairline-strong: #a8adb8;
+  --color-ink:             #111111;
+  --color-ink-muted:       #1a1a1a;
+  --color-ink-subtle:      #333333;
+  --color-ink-tertiary:    #444444;
+  --color-primary:         #5e6ad2;
+  --color-primary-hover:   #4f5ec4;
+}
+
+html {
+  font-size: 112.5%; /* 기본 16px → 18px base, text-sm 14px → 15.75px */
+}
+
+*, *::before, *::after {
+  font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: #f5f6f8;
+  color: #111827;
+  line-height: 1.6;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+::selection {
+  background-color: #c7d2fe;
+  color: #111827;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9ca3af;
+}
+
+select option {
+  background-color: #ffffff;
+  color: #111827;
+}
+
+/* 스크롤바 */
+::-webkit-scrollbar       { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #c8cbd3; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
