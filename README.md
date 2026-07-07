@@ -132,13 +132,6 @@
 
 ---
 
-#### 4. [네 번째 프로젝트 제목 입력란]
-* **Role**: Project Leader / Data Engineer / Analyst
-* **Core Tech**: 
-* **Summary**: 
-
----
-
 ## 🛠️ 핵심 방법론적 차별성 (Core Philosophy)
 
 1. **도메인 생태계와 통계학의 융합**: 단순한 예측 스코어링을 넘어, 의료 가이드라인에 기반한 데이터 엔지니어링과 선택 편향을 제어하는 통계적 장치(Causal Framework)를 모델링 전반에 이식합니다.
