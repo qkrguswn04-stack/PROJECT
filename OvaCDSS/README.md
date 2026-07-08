@@ -220,17 +220,6 @@ ovariancdss/
 │       │   └── ovarian_cancer_note_normalization35.csv
 │       └── requirements.txt
 │
-├── individual-insulin-aki/
-│  ├── data/
-│  │   └── chemo_training_dataset.csv
-│  ├── models/
-│  │   ├── tune_lightgbm.py
-│  │   ├── tune_mlp.py
-│  │   ├── tune_xgboost.py
-│  │   └── compare_results.py
-│  ├── README.md
-│  └── requirements.txt
-│
 ├── src/                                  # Next.js 프론트엔드
 │   ├── app/
 │   │   ├── layout.jsx
