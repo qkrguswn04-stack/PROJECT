@@ -1,0 +1,8 @@
+scikit-learn
+xgboost
+imbalanced-learn
+shap
+joblib
+matplotlib
+sqlalchemy
+psycopg[binary]
