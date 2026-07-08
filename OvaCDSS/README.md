@@ -220,6 +220,17 @@ ovariancdss/
 │       │   └── ovarian_cancer_note_normalization35.csv
 │       └── requirements.txt
 │
+├── individual-insulin-aki/
+│  ├── data/
+│  │   └── chemo_training_dataset.csv
+│  ├── models/
+│  │   ├── tune_lightgbm.py
+│  │   ├── tune_mlp.py
+│  │   ├── tune_xgboost.py
+│  │   └── compare_results.py
+│  ├── README.md
+│  └── requirements.txt
+│
 ├── src/                                  # Next.js 프론트엔드
 │   ├── app/
 │   │   ├── layout.jsx
@@ -254,11 +265,6 @@ ovariancdss/
 │   ├── classification_best_auc.pth
 │   ├── benign_subtype_best.pth
 │   └── malignant_subtype_best.pth
-│
-├── public/
-│   ├── favicon.svg
-│   ├── ovacdss_logo.png
-│   └── sample_labs.csv
 │
 ├── node_modules/                         # Node 의존성 (자동 생성)
 ├── package.json
