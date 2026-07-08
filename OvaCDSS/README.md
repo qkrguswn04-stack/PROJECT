@@ -182,7 +182,7 @@ ovariancdss/
 │   │   │   └── inference.py
 │   │   └── utils.py
 │   │
-│   └── bloodwork/                        # 혈액검사 XGBoost 모듈
+│   └── dist/                        # 혈액검사 XGBoost 모듈
 │       ├── trainer.py                    # XGBoost 훈련
 │       ├── clinical_advanced.py          # 전처리 (TyG Index)
 │       ├── preprocessor.py               # 정규화
