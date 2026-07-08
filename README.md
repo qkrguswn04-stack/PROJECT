@@ -31,17 +31,17 @@
 ---
 
 ## 🛠️ 기술 스택
-언어: Python, JavaScript, SQL, HTML5
-데이터 처리: Pandas, NumPy, PostgreSQL, MIMIC-IV, AI-HUB
-머신러닝: PyTorch, XGBoost, scikit-learn, CausalML, IPW (인과 추론)
-딥러닝: YOLOv8, RT-DETR, DenseNet, Swin Transformer, Vision Transformer
-백엔드: FastAPI, SQLAlchemy
-프론트엔드: Next.js, React, Tailwind CSS
-협업/배포: Git/SVN, Docker, Notion, Streamlit
-특화 기술:
-FlowPy/FCSPly (유세포 분석)
-Causal Inference (인과 추론)
-Outlier Detection (Isolation Forest, LOF)
+- 언어: Python, JavaScript, SQL, HTML5
+- 데이터 처리: Pandas, NumPy, PostgreSQL, MIMIC-IV, AI-HUB
+- 머신러닝: PyTorch, XGBoost, scikit-learn, CausalML, IPW (인과 추론)
+- 딥러닝: YOLOv8, RT-DETR, DenseNet, Swin Transformer, Vision Transformer
+- 백엔드: FastAPI, SQLAlchemy
+- 프론트엔드: Next.js, React, Tailwind CSS
+- 협업/배포: Git/SVN, Docker, Notion, Streamlit
+- 특화 기술:
+-   FlowPy/FCSPly (유세포 분석)
+-   Causal Inference (인과 추론)
+-   Outlier Detection (Isolation Forest, LOF)
 
 ---
 
