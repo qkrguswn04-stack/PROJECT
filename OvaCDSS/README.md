@@ -383,6 +383,8 @@ RMI 점수 계산
 - **송대영** (ML): snow8832@naver.com
 - **이다영** (BE/FE): dy4591@naver.com
 
+- **Project Detail** : https://app.notion.com/p/OVA-LINK-CDSS-34fc849cdbb580e0a47fd3cee06a3977?source=copy_link
+
 ---
 
 ## 라이선스
