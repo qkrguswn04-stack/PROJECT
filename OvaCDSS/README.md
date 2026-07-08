@@ -162,26 +162,87 @@
 
 ```
 ovariancdss/
-├── backend/                          # FastAPI 백엔드
-│   ├── main.py, auth.py, db.py
-│   ├── patients.py, predict.py       # 환자 정보 & AI 분석
-│   ├── gpu_inference_server.py        # GPU 서버 연동 (박현주 설계)
-│   └── requirements.txt
+├── backend/                              # FastAPI 백엔드
+│   ├── main.py                           # 메인 서버 진입점
+│   ├── auth.py                           # 인증 처리
+│   ├── config.py                         # 설정
+│   ├── db.py                             # 데이터베이스 연결
+│   ├── patients.py                       # 환자 정보 조회
+│   ├── predict.py                        # AI 분석 요청
+│   ├── gpu_inference_server.py           # GPU 서버 연동
+│   ├── requirements.txt
+│   │
+│   ├── ultrasound/                       # 초음파 AI 모듈
+│   │   ├── detection/
+│   │   │   ├── yolov8n_inference.py
+│   │   │   ├── rtdetr_inference.py
+│   │   │   └── wbf_ensemble.py           # Weighted Box Fusion
+│   │   ├── classification/
+│   │   │   ├── densenet_swin.py
+│   │   │   └── inference.py
+│   │   └── utils.py
+│   │
+│   └── bloodwork/                        # 혈액검사 XGBoost 모듈
+│       ├── trainer.py                    # XGBoost 훈련
+│       ├── clinical_advanced.py          # 전처리 (TyG Index)
+│       ├── preprocessor.py               # 정규화
+│       ├── inference.py                  # 추론
+│       ├── models/
+│       │   └── final_xgboost_tyg_model.pkl
+│       ├── data/
+│       │   ├── chemo_training_dataset.csv
+│       │   └── ovarian_cancer_note_normalization35.csv
+│       └── requirements.txt
 │
-├── src/                              # Next.js 프론트엔드
-│   ├── app/                          # 라우터 및 레이아웃
-│   │   ├── (dashboard)/cdss/page.jsx # CDSS 판정 화면
-│   │   ├── (dashboard)/pacs/page.jsx # 초음파 뷰어
-│   │   └── (dashboard)/patients/     # 환자 관리
+├── src/                                  # Next.js 프론트엔드
+│   ├── app/
+│   │   ├── layout.jsx
+│   │   ├── page.jsx
+│   │   ├── globals.css
+│   │   ├── login/page.jsx
+│   │   └── (dashboard)/
+│   │       ├── layout.jsx
+│   │       ├── cdss/page.jsx             # CDSS 판정 화면
+│   │       ├── pacs/page.jsx             # 초음파 뷰어
+│   │       ├── patients/
+│   │       │   ├── register/page.jsx
+│   │       │   └── [id]/page.jsx
+│   │       ├── rmi/page.jsx
+│   │       └── reports/page.jsx
 │   │
 │   ├── components/
-│   │   └── BboxOverlay.jsx           # 초음파 박스 오버레이
+│   │   ├── Header.jsx
+│   │   ├── Sidebar.jsx
+│   │   ├── BboxOverlay.jsx               # 초음파 박스 오버레이
+│   │   ├── PrivateRoute.jsx
+│   │   └── RiskBadge.jsx
 │   │
-│   └── lib/api.js, AuthContext.jsx
+│   └── lib/
+│       ├── api.js
+│       ├── AuthContext.jsx
+│       └── mockData.js
 │
-├── workspace_pth/                    # AI 모델 가중치 (폐쇄망)
-├── package.json, next.config.mjs
+├── workspace_pth/                        # AI 모델 가중치 (폐쇄망)
+│   ├── yolov8n_best.pt
+│   ├── rtdetr_best.pt
+│   ├── classification_best_auc.pth
+│   ├── benign_subtype_best.pth
+│   └── malignant_subtype_best.pth
+│
+├── public/
+│   ├── favicon.svg
+│   ├── ovacdss_logo.png
+│   └── sample_labs.csv
+│
+├── node_modules/                         # Node 의존성 (자동 생성)
+├── package.json
+├── package-lock.json
+├── next.config.mjs
+├── jsconfig.json
+├── postcss.config.mjs
+├── .env                                  # 환경 변수 (미포함)
 ├── .env.example
+├── .gitignore
 └── README.md
 ```
 
